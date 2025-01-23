@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const db_1 = __importDefault(require("../db"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const transporter = nodemailer_1.default.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -24,10 +26,8 @@ const transporter = nodemailer_1.default.createTransport({
         pass: process.env.EMAIL_PASS,
     },
 });
-console.log("Email user", process.env.EMAIL_USER);
-console.log("pswrd user", process.env.EMAIL_PASS);
 const router = (0, express_1.Router)();
-//@ts-ignore
+// @ts-ignore
 router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, dob, password } = req.body;
     try {
@@ -37,44 +37,40 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered" });
         }
-        //storing data temporarily in redis
-        const userData = {
-            name,
-            email,
-            dob,
-            password,
-        };
-        //generate a random otp
+        // Hash the password
+        const hash = yield bcryptjs_1.default.hash(password, 10);
         const otp = Math.floor(100000 + Math.random() * 900000);
-        const expiryTime = new Date(Date.now() + 5 * 60 * 1000);
+        const expiryTime = new Date(Date.now() + 5 * 60 * 1000); // OTP expiry in 5 minutes
         yield db_1.default.user.create({
             data: {
                 name,
                 email,
                 dob: new Date(dob),
-                password,
+                password: hash, // Store the hashed password, not plain text
                 otp: otp.toString(),
                 otpExpiry: expiryTime,
                 isVerified: false,
             },
         });
+        // Send verification email with OTP
         yield transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
             subject: "Verify Your Email",
             html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2>Welcome to [Your App Name]!</h2>
-                <p>Your verification code is: <strong>${otp}</strong></p>
-                <p>This code will expire in 5 minutes.</p>
-                <p>If you didn't request this code, please ignore this email.</p>
-              </div>
-            `,
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Welcome to [Your App Name]!</h2>
+          <p>Your verification code is: <strong>${otp}</strong></p>
+          <p>This code will expire in 5 minutes.</p>
+          <p>If you didn't request this code, please ignore this email.</p>
+        </div>
+      `,
         });
         res.status(200).json({ message: "Registration initiated successfully" });
     }
     catch (error) {
         console.log("Error in signup", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }));
 // OTP Verification Endpoint
@@ -107,6 +103,43 @@ router.post("/verify-otp", (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (error) {
         console.log("Error in OTP verification", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+}));
+// Signin Route (with password validation and verification)
+//@ts-ignore
+router.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required.' });
+    }
+    try {
+        // Find user by email
+        const user = yield db_1.default.user.findUnique({
+            where: { email },
+        });
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+        // Check if user is verified
+        if (!user.isVerified) {
+            return res.status(403).json({ error: 'User is not verified. Please verify your account before signing in.' });
+        }
+        // Compare password
+        const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid password.' });
+        }
+        // Generate JWT token
+        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({
+            message: 'Sign-in successful.',
+            token,
+        });
+    }
+    catch (error) {
+        console.error('Error during sign-in:', error);
+        res.status(500).json({ error: 'An error occurred during sign-in. Please try again later.' });
     }
 }));
 exports.default = router;
