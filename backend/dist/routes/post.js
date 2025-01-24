@@ -28,12 +28,6 @@ router.post("/notes", middleware_1.middleware, (req, res) => __awaiter(void 0, v
                 message: "Title and content are required",
             });
         }
-        if (!userId) {
-            return res.status(401).json({
-                status: "error",
-                message: "Unauthorized",
-            });
-        }
         const newNote = yield db_1.default.note.create({
             data: {
                 title: title.trim(),
@@ -50,7 +44,7 @@ router.post("/notes", middleware_1.middleware, (req, res) => __awaiter(void 0, v
         console.error("Create note error:", error);
         res.status(500).json({
             status: "error",
-            message: error instanceof Error ? error.message : "Failed to create note",
+            message: "Failed to create note",
         });
     }
 }));
