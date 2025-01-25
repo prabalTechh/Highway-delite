@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { middleware } from "../middleware";
 import Client from "../db";
 
 const router = Router();
 //@ts-ignore
-router.post("/notes", middleware, async (req, res) => {
+router.post("/notes", middleware, async (req:Request, res:Response) => {
   try {
     const { title, content } = req.body;
     //@ts-ignore
@@ -37,7 +37,7 @@ router.post("/notes", middleware, async (req, res) => {
     });
   }
 });
-router.get("/notes", middleware, async (req, res) => {
+router.get("/notes", middleware, async (req:Request, res:Response) => {
   try {
     //@ts-ignore
     const userId = req.userId;
@@ -59,7 +59,7 @@ router.get("/notes", middleware, async (req, res) => {
   }
 });
 //@ts-ignore
-router.put("/notes/:id", middleware, async (req, res) => {
+router.put("/notes/:id", middleware, async (req:Request, res:Response) => {
   try {
     const { id } = req.params;
     const { title, content } = req.body;
@@ -101,7 +101,7 @@ router.put("/notes/:id", middleware, async (req, res) => {
 
 // Delete a specific note
 //@ts-ignore
-router.delete("/notes/:id", middleware, async (req, res) => {
+router.delete("/notes/:id", middleware, async (req:Request, res:Response) => {
   try {
     const { id } = req.params;
     //@ts-ignore

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { Router } from "express";
 import Client from "../db";
 import nodemailer from "nodemailer";
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 const router = Router();
 
 // @ts-ignore
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req:Request, res:Response) => {
   const { name, email, dob, password } = req.body;
 
   try {
@@ -85,7 +85,7 @@ router.post("/signup", async (req, res) => {
 
 // OTP Verification Endpoint
 //@ts-ignore
-router.post("/verify-otp", async (req, res) => {
+router.post("/verify-otp", async (req:Request, res:Response) => {
   const { email, otp } = req.body;
 
   try {
@@ -124,7 +124,7 @@ router.post("/verify-otp", async (req, res) => {
 
 // Signin Route (with password validation and verification)
 //@ts-ignore
-router.post("/signin", async (req, res) => {
+router.post("/signin", async (req:Request, res:Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -179,7 +179,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get("/profile", middleware ,async (req, res) => {
+router.get("/profile", middleware ,async (req:Request, res:Response) => {
 //@ts-ignore
   const userId = req.userId;
 
