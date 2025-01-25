@@ -14,7 +14,7 @@ interface typeNotes {
   title: string;
   content: string;
 }
-const BASE_URL = "https://highway-delite-ue66.onrender.com/api/posts" ;
+const BASE_URL = "https://highway-delite-ue66.onrender.com/api/posts";
 const BASE_URL_USER = "https://highway-delite-ue66.onrender.com/api/user";
 
 const Dashboard = () => {
@@ -43,7 +43,6 @@ const Dashboard = () => {
     getNotesData();
   }, [token]);
 
-
   useEffect(() => {
     const getUserData = async () => {
       const { data } = await axios.get(`${BASE_URL_USER}/profile`, {
@@ -51,14 +50,12 @@ const Dashboard = () => {
           Authorization: token,
         },
       });
-      const userData = (data as any).data
+      const userData = (data as any).data;
       setUserData(userData);
       // setUserData(notesData);
     };
     getUserData();
   }, [token]);
-
-
 
   const handleDeleteNote = async (id: string) => {
     try {
@@ -163,9 +160,9 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen w-screen">
-      <div className="flex justify-between items-center px-5 py-2">
+      <div className="flex justify-between items-center px-10 py-4">
         <img src={logo} alt="logo" />
-        <h1>Dashboard</h1>
+        <h1 className="text-lg font-bold">Dashboard</h1>
         <button
           className="underline text-blue-400"
           onClick={() => {
@@ -178,21 +175,22 @@ const Dashboard = () => {
       </div>
 
       <div className="w-full">
-        <div className="border border-gray-300 px-5 py-4 m-5">
-          <h1 className="text-xl font-semibold ">Welcome, <span className="font-bold">{userData.name}</span></h1>
+        <div className="border border-gray-300 shadow-lg px-5 py-4 m-5">
+          <h1 className="text-xl font-semibold ">
+            Welcome, <span className="font-bold">{userData.name}</span>
+          </h1>
           <h2 className="font-light">{userData.email}</h2>
         </div>
       </div>
 
       <div className="w-full">
-        <div className="border border-gray-300 px-5 py-4 gap-4 m-5">
-          <div className="flex justify-between items-center px-1 text-sm lg:text-base lg:px-8">
-            <h1 className="text-2xl font-bold">NOTES</h1>
+        <div className="b px-5 py-4 gap-4 m-5">
+          <div className="flex flex-col justify-between  px-10 gap-3 text-sm lg:text-base lg:px-8">
             <button
               onClick={handleButtonClick}
-              className="px-5 py-1 border border-gray-300 font-semibold rounded-xl"
+              className="px-5 py-2 border border-gray-300 bg-[#367AFF] text-white font-semibold rounded-xl"
             >
-              {isEditing ? "Cancel Edit" : "Add Notes"}
+              {isEditing ? "Cancel Edit" : "Create Note"}
             </button>
           </div>
 
@@ -224,10 +222,10 @@ const Dashboard = () => {
 
                 <div className="flex justify-end">
                   <button
-                    className="border border-gray-400 px-5 py-1 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="border border-gray-400 bg-[#367AFF] px-5 py-1 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     onClick={isEditing ? handleUpdateNote : handleAddNote}
                   >
-                    {isEditing ? "Update Note" : "Add"}
+                    {isEditing ? "Update Note" : "Add note"}
                   </button>
                 </div>
               </div>
@@ -235,14 +233,17 @@ const Dashboard = () => {
           )}
 
           {!isVisible && (
-            <div className="w-full flex flex-col rounded-lg">
+            <div className="w-full gap-2  flex flex-col rounded-lg">
+              <h1 className="text-base font-bold pl-5 pt-10 ">NOTES</h1>
               {notes.map((note) => (
                 <Notes
                   key={note.id}
                   id={note.id}
                   title={note.title}
                   content={note.content}
-                  onClick1={() => handleEditNote(note.id, note.title, note.content)}
+                  onClick1={() =>
+                    handleEditNote(note.id, note.title, note.content)
+                  }
                   onClick2={handleDeleteNote}
                 />
               ))}

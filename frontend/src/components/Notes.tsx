@@ -11,7 +11,7 @@ interface NotesProps {
 
 const Notes = ({ title, content, id, onClick1, onClick2 }: NotesProps) => {
   return (
-    <div className="border border-gray-300 p-2 m-2 rounded-2xl">
+    <div className="shadow-lg shadow-gray-300 p-2 m-2 rounded-2xl">
       <div className="px-8 shadow rounded-xl flex justify-between items-center">
         <h1 className="text-lg font-semibold">{title}</h1>
         <div className="flex gap-1 lg:gap-4 items-center justify-center py-1">
