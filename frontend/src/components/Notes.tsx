@@ -13,7 +13,7 @@ const Notes = ({ title, content, id, onClick1, onClick2 }: NotesProps) => {
   return (
     <div className="border border-gray-300 p-2 m-2 rounded-2xl">
       <div className="px-8 shadow rounded-xl flex justify-between items-center">
-        <h1 className="text-xl font-semibold">{title}</h1>
+        <h1 className="text-lg font-semibold">{title}</h1>
         <div className="flex gap-1 lg:gap-4 items-center justify-center py-1">
           <button
             className="p-1 lg:p-3 shadow rounded-4xl"
@@ -29,7 +29,7 @@ const Notes = ({ title, content, id, onClick1, onClick2 }: NotesProps) => {
           </button>
         </div>
       </div>
-      <div className="max-w-screen-lg px-14 text-left mx-auto py-4">
+      <div className="max-w-screen-lg px-14 text-sm text-left mx-auto py-4">
         <p>{content}</p>
       </div>
     </div>

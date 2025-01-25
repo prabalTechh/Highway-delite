@@ -59,12 +59,24 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
             to: email,
             subject: "Verify Your Email",
             html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome to [Your App Name]!</h2>
-          <p>Your verification code is: <strong>${otp}</strong></p>
-          <p>This code will expire in 5 minutes.</p>
-          <p>If you didn't request this code, please ignore this email.</p>
-        </div>
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+  <div style="margin:50px auto;width:70%;padding:20px 0">
+    <div style="border-bottom:1px solid #eee">
+      <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">NoteKeep</a>
+    </div>
+    <p style="font-size:1.1em">Hi,</p>
+    <p>Thank you for choosing NoteKeep. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+    <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+    <p style="font-size:0.9em;">Regards,<br />NoteKeep</p>
+    <hr style="border:none;border-top:1px solid #eee" />
+    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+      <p>NoteKeep Inc</p>
+      <p>123 MG Road</p>
+      <p>Bangalore, India</p>
+      <p>Contact: +91-9876543210</p>
+    </div>
+  </div>
+</div>
       `,
         });
         res.status(200).json({ message: "Registration initiated successfully" });

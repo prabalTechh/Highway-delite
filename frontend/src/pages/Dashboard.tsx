@@ -187,7 +187,7 @@ const Dashboard = () => {
       <div className="w-full">
         <div className="border border-gray-300 px-5 py-4 gap-4 m-5">
           <div className="flex justify-between items-center px-1 text-sm lg:text-base lg:px-8">
-            <h1>NOTES</h1>
+            <h1 className="text-2xl font-bold">NOTES</h1>
             <button
               onClick={handleButtonClick}
               className="px-5 py-1 border border-gray-300 font-semibold rounded-xl"

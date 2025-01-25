@@ -3,8 +3,8 @@ import axios from "axios";
 import icon from "../assets/icon.png";
 import bgImg from "../assets/bg.png";
 import Input from "../components/Input";
-import googlesvg from "../assets/plus.svg";
-import { Link, useNavigate } from "react-router-dom";
+// import googlesvg from "../assets/plus.svg";
+import {  useNavigate } from "react-router-dom";
 
 interface FormDataProp {
   name: string;
@@ -27,12 +27,14 @@ const SignUp: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOTPVerification, setShowOTPVerification] = useState(false);
   const [otp, setOTP] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const sendSignupRequest = async () => {
       if (!isSubmitting) return;
 
       try {
+        setIsLoading(true);
         const response = await axios.post(
           `${BASE_URL}/api/user/signup`,
           formData
@@ -43,6 +45,8 @@ const SignUp: React.FC = () => {
       } catch (error) {
         console.error(error);
         setIsSubmitting(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -54,9 +58,10 @@ const SignUp: React.FC = () => {
     setIsSubmitting(true);
   };
 
-  const handleOTPVerification = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOTPVerification = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await axios.post(`${BASE_URL}/api/user/verify-otp`, {
         email: formData.email,
         otp: otp,
@@ -66,6 +71,8 @@ const SignUp: React.FC = () => {
     } catch (error) {
       console.error(error);
       // Handle OTP verification error
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,29 +129,41 @@ const SignUp: React.FC = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                   />
-                  <div className=" text-center py-2 rounded-lg hover:bg-blue-700 bg-[#367AFF] text-white font-semibold max-w-sm">
-                    <button className="">Sign Up</button>
-                  </div>
-                  <div className="flex max-w-sm text-gray-400 items-center gap-1 py-2">
-                    <hr className="w-full border-gray-400" />
-                    or
-                    <hr className="w-full border-gray-400" />
-                  </div>
-                  <div className="border border-gray-300 text-center py-2 rounded-lg  font-semibold max-w-sm">
-                    <button className="flex w-full items-center justify-center">
-                      Continue with Google{" "}
-                      <span>
-                        <img src={googlesvg} alt="svg" />
-                      </span>
-                    </button>
-                 
-                  </div>
-                  <div className="flex max-w-sm text-gray-400  items-center justify-center">
-                      already have an account?
-                      <span className="text-blue-400 underline">
-                        <Link to="/login">Log In</Link>
-                      </span>
-                    </div>
+                  <button 
+                    disabled={isLoading} 
+                    className={`text-center py-2 rounded-lg max-w-sm text-white font-semibold ${
+                      isLoading 
+                        ? 'bg-blue-300 cursor-not-allowed' 
+                        : 'bg-[#367AFF] hover:bg-blue-700'
+                    }`}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <svg 
+                          className="animate-spin h-5 w-5 mr-3" 
+                          viewBox="0 0 24 24"
+                        >
+                          <circle 
+                            className="opacity-25" 
+                            cx="12" 
+                            cy="12" 
+                            r="10" 
+                            stroke="currentColor" 
+                            strokeWidth="4"
+                          ></circle>
+                          <path 
+                            className="opacity-75" 
+                            fill="currentColor" 
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Signing up...
+                      </div>
+                    ) : (
+                      "Sign Up"
+                    )}
+                  </button>
+                  {/* Rest of the code remains the same */}
                 </form>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -161,11 +180,42 @@ const SignUp: React.FC = () => {
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
                   />
-                  <div className=" text-center py-2 rounded-lg hover:bg-blue-700 bg-[#367AFF] text-white font-semibold max-w-sm">
-                    <form onSubmit={handleOTPVerification}>
-                      <button type="submit">Verify OTP</button>
-                    </form>
-                  </div>
+                  <button 
+                    type="submit"
+                    disabled={isLoading} 
+                    onClick={handleOTPVerification}
+                    className={`text-center py-2 rounded-lg max-w-sm text-white font-semibold ${
+                      isLoading 
+                        ? 'bg-blue-300 cursor-not-allowed' 
+                        : 'bg-[#367AFF] hover:bg-blue-700'
+                    }`}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <svg 
+                          className="animate-spin h-5 w-5 mr-3" 
+                          viewBox="0 0 24 24"
+                        >
+                          <circle 
+                            className="opacity-25" 
+                            cx="12" 
+                            cy="12" 
+                            r="10" 
+                            stroke="currentColor" 
+                            strokeWidth="4"
+                          ></circle>
+                          <path 
+                            className="opacity-75" 
+                            fill="currentColor" 
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Verifying OTP...
+                      </div>
+                    ) : (
+                      "Verify OTP"
+                    )}
+                  </button>
                 </div>
               )}
             </div>
