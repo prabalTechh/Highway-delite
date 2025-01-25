@@ -5,9 +5,19 @@ import cors from "cors";
 const app = express();
 const PORT = 4000;
 app.use(cors({
-  origin: ['https://highway-delite-ue66.onrender.com'],
+  origin: function(origin, callback){
+    // Allow all origins in development
+    if (!origin || 
+        origin === 'http://localhost:5173' || 
+        origin === 'https://highway-delite-ue66.onrender.com') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json());
 
