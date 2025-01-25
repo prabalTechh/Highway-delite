@@ -1,4 +1,4 @@
-**# Note Keeper
+## Note Keeper
 
 Note Keeper is a full-stack web application for creating, reading, updating, and deleting personal notes with user authentication.
 
