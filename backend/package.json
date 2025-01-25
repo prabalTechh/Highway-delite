@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build" : "tsc -b",
+    "build": "tsc -b",
     "dev": "npm run build && node dist/index.js"
   },
   "keywords": [],
@@ -29,5 +29,8 @@
     "prisma": "^6.2.1",
     "typescript": "^5.7.3",
     "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10"
   }
 }
