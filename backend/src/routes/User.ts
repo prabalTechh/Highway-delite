@@ -3,7 +3,8 @@ import { Router } from "express";
 import Client from "../db";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";  
+import jwt from "jsonwebtoken";
+import { middleware } from "../middleware";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -41,7 +42,7 @@ router.post("/signup", async (req, res) => {
         name,
         email,
         dob: new Date(dob),
-        password: hash,  // Store the hashed password, not plain text
+        password: hash, // Store the hashed password, not plain text
         otp: otp.toString(),
         otpExpiry: expiryTime,
         isVerified: false,
@@ -111,11 +112,11 @@ router.post("/verify-otp", async (req, res) => {
 
 // Signin Route (with password validation and verification)
 //@ts-ignore
-router.post('/signin', async (req, res) => {
+router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
+    return res.status(400).json({ error: "Email and password are required." });
   }
 
   try {
@@ -126,34 +127,59 @@ router.post('/signin', async (req, res) => {
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      return res.status(404).json({ error: "User not found." });
     }
 
     // Check if user is verified
     if (!user.isVerified) {
-      return res.status(403).json({ error: 'User is not verified. Please verify your account before signing in.' });
+      return res
+        .status(403)
+        .json({
+          error:
+            "User is not verified. Please verify your account before signing in.",
+        });
     }
 
     // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid password.' });
+      return res.status(401).json({ error: "Invalid password." });
     }
 
     // Generate JWT token
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET as string,
-      { expiresIn: '1h' }
+      { expiresIn: "1h" }
     );
 
     res.status(200).json({
-      message: 'Sign-in successful.',
+      message: "Sign-in successful.",
       token,
     });
   } catch (error) {
-    console.error('Error during sign-in:', error);
-    res.status(500).json({ error: 'An error occurred during sign-in. Please try again later.' });
+    console.error("Error during sign-in:", error);
+    res
+      .status(500)
+      .json({
+        error: "An error occurred during sign-in. Please try again later.",
+      });
+  }
+});
+
+router.get("/profile", middleware ,async (req, res) => {
+//@ts-ignore
+  const userId = req.userId;
+
+  try {
+    const users = await Client.user.findFirst({
+      where:{
+        id: userId
+      }
+    });
+    res.json({ data: users });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

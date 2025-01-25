@@ -17,6 +17,7 @@ const db_1 = __importDefault(require("../db"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const middleware_1 = require("../middleware");
 const transporter = nodemailer_1.default.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -107,10 +108,10 @@ router.post("/verify-otp", (req, res) => __awaiter(void 0, void 0, void 0, funct
 }));
 // Signin Route (with password validation and verification)
 //@ts-ignore
-router.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required.' });
+        return res.status(400).json({ error: "Email and password are required." });
     }
     try {
         // Find user by email
@@ -119,27 +120,50 @@ router.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
         // Check if user exists
         if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
+            return res.status(404).json({ error: "User not found." });
         }
         // Check if user is verified
         if (!user.isVerified) {
-            return res.status(403).json({ error: 'User is not verified. Please verify your account before signing in.' });
+            return res
+                .status(403)
+                .json({
+                error: "User is not verified. Please verify your account before signing in.",
+            });
         }
         // Compare password
         const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid password.' });
+            return res.status(401).json({ error: "Invalid password." });
         }
         // Generate JWT token
-        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
         res.status(200).json({
-            message: 'Sign-in successful.',
+            message: "Sign-in successful.",
             token,
         });
     }
     catch (error) {
-        console.error('Error during sign-in:', error);
-        res.status(500).json({ error: 'An error occurred during sign-in. Please try again later.' });
+        console.error("Error during sign-in:", error);
+        res
+            .status(500)
+            .json({
+            error: "An error occurred during sign-in. Please try again later.",
+        });
+    }
+}));
+router.get("/profile", middleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const userId = req.userId;
+    try {
+        const users = yield db_1.default.user.findFirst({
+            where: {
+                id: userId
+            }
+        });
+        res.json({ data: users });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Internal server error" });
     }
 }));
 exports.default = router;

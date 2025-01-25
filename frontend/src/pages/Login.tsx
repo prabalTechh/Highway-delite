@@ -42,6 +42,10 @@ const Login = () => {
           `${BASE_URL}/api/user/signin`,
           formData
         );
+        if(response.status === 200) {
+          const data = response.data as { token: string };
+          localStorage.setItem("token", data.token);
+        }
         console.log(response.data);
         setIsSubmitting(false);
         navigate("/dashboard");
@@ -64,14 +68,14 @@ const Login = () => {
   return (
     <div className="flex w-screen h-screen">
       {isLoading && <Loader />} {/* Display loader conditionally */}
-      <div className="w-2/3 h-full p-2">
+      <div className="hidden md:block w-2/3 h-full p-2">
         <img
           src={bgImg}
           alt="background"
           className="object-cover w-full h-full"
         />
       </div>
-      <div className="flex w-1/3 h-full flex-col">
+      <div className="flex w-full md:w-1/3 h-full flex-col">
         <div className="flex gap-2 p-5">
           <img src={logoImg} alt="icon" />
           <h1>HD</h1>

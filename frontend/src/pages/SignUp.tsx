@@ -76,7 +76,7 @@ const SignUp: React.FC = () => {
           <img src={icon} alt="icon" />
           <h1>HD</h1>
         </div>
-        <div className="flex h-full w-full px-8">
+        <div className="flex h-full w-full md:px-8">
           <div className="h-full w-full lg:w-1/2">
             <div className="max-w-screen-sm h-full mx-auto flex flex-col justify-center gap-4 px-8 py-8">
               {!showOTPVerification ? (
