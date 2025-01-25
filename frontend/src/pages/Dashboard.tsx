@@ -175,7 +175,7 @@ const Dashboard = () => {
       </div>
 
       <div className="w-full">
-        <div className="border border-gray-300 shadow-lg px-5 py-4 m-5">
+        <div className="shadow-lg shadow-gray-300 px-5 py-4 m-5">
           <h1 className="text-xl font-semibold ">
             Welcome, <span className="font-bold">{userData.name}</span>
           </h1>
