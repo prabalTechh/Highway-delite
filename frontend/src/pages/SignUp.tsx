@@ -3,8 +3,8 @@ import axios from "axios";
 import icon from "../assets/icon.png";
 import bgImg from "../assets/bg.png";
 import Input from "../components/Input";
-// import googlesvg from "../assets/plus.svg";
-import {  useNavigate } from "react-router-dom";
+import googlesvg from "../assets/plus.svg";
+import {  Link, useNavigate } from "react-router-dom";
 
 interface FormDataProp {
   name: string;
@@ -13,7 +13,7 @@ interface FormDataProp {
   password: string;
 }
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://highway-delite-ue66.onrender.com";
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState<FormDataProp>({
@@ -164,6 +164,26 @@ const SignUp: React.FC = () => {
                     )}
                   </button>
                   {/* Rest of the code remains the same */}
+                  <div className="flex max-w-sm text-gray-400 items-center gap-1 py-2">
+                    <hr className="w-full border-gray-400" />
+                    or
+                    <hr className="w-full border-gray-400" />
+                  </div>
+                  <div className="border border-gray-300 text-center py-2 rounded-lg  font-semibold max-w-sm">
+                    <button className="flex w-full items-center justify-center">
+                      Continue with Google{" "}
+                      <span>
+                        <img src={googlesvg} alt="svg" />
+                      </span>
+                    </button>
+                 
+                  </div>
+                  <div className="flex max-w-sm text-gray-400  items-center justify-center">
+                      already have an account?
+                      <span className="text-blue-400 underline">
+                        <Link to="/login">Log In</Link>
+                      </span>
+                    </div>
                 </form>
               ) : (
                 <div className="flex flex-col gap-2">
