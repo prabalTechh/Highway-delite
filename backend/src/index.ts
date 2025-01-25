@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 const PORT = 4000;
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://highway-delite-ue66.onrender.com'],
+  origin: ['https://highway-delite-ue66.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
