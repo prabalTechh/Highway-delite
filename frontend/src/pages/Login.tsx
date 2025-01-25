@@ -21,7 +21,7 @@ interface FormDataProp {
   password: string;
 }
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://highway-delite-ue66.onrender.com";
 
 const Login = () => {
   const navigate = useNavigate();

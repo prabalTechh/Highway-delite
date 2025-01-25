@@ -14,8 +14,8 @@ interface typeNotes {
   title: string;
   content: string;
 }
-const BASE_URL = "http://localhost:4000/api/posts";
-const BASE_URL_USER = "http://localhost:4000/api/user";
+const BASE_URL = "https://highway-delite-ue66.onrender.com/api/posts" ;
+const BASE_URL_USER = "https://highway-delite-ue66.onrender.com/api/user";
 
 const Dashboard = () => {
   const [isVisible, setIsVisible] = useState(false);

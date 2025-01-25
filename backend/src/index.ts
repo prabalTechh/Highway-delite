@@ -4,7 +4,11 @@ import cors from "cors";
 
 const app = express();
 const PORT = 4000;
-
+const corsOptions = {
+  origin: 'https://highway-delite-ue66.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+};
 app.use(express.json());
 app.use(cors());
 
